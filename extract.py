@@ -4,13 +4,26 @@ import math
 import os
 import random as rnd
 import matplotlib.pyplot as plt
-import cPickle as pickle
+# import cPickle as pickle
+import _pickle as pickle
 from scipy import *
-from scipy.misc import imread
+import imageio
+
+# Show image
+def show_img(path):
+    img = imageio.imread(path, pilmode="RGB")
+    plt.imshow(img)
+    plt.show()
 
 # Feature extractor
 def extract_features(image_path, vector_size=32):
-    image = imread(image_path, mode="L")
+    image = imageio.imread(image_path)
+    print(image.shape == (299, 299))
+    if (image.shape == (299, 299)):
+        np.tile(image, (3,1,1))
+        np.transpose(image, (1,2,0))
+    print(image.shape)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     try:
         # Using KAZE, cause SIFT, ORB and other was moved to additional module
         # which is adding addtional pain during install
@@ -33,7 +46,7 @@ def extract_features(image_path, vector_size=32):
             # end of our feature vector
             dsc = np.concatenate([dsc, np.zeros(needed_size - dsc.size)])
     except cv2.error as e:
-        print 'Error: ', e
+        print ('Error: ', e)
         return None
 
     return dsc
@@ -47,9 +60,9 @@ def batch_extractor(images_path, dump_path="features.pck"):
         files = [os.path.join(folders[i], p) for p in sorted(os.listdir(folders[i]))]
         result = []
         avgresult = []
-        print i
-        num.append(len(files) * 4 // 5)
-        for j in range(len(files) * 4 // 5):
+        print (i)
+        num.append(len(files))
+        for j in range(len(files)):
             name = files[j].split('/')[-1].lower()
             result.append(extract_features(files[j]))
         

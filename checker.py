@@ -12,7 +12,7 @@ for line in f.readlines():
         line = line[:-1]
     model.append(line.split(' '))
 
-img_file = '2.jpg'
+img_file = '5.jpg'
 img = extract_features(img_file)
 
 res = []
