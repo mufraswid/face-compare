@@ -5,7 +5,7 @@ import os
 import random as rnd
 import matplotlib.pyplot as plt
 # import cPickle as pickle
-import _pickle as pickle
+import cPickle as pickle
 from scipy import *
 import imageio
 
@@ -17,13 +17,7 @@ def show_img(path):
 
 # Feature extractor
 def extract_features(image_path, vector_size=32):
-    image = imageio.imread(image_path)
-    print(image.shape == (299, 299))
-    if (image.shape == (299, 299)):
-        np.tile(image, (3,1,1))
-        np.transpose(image, (1,2,0))
-    print(image.shape)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    image = imageio.imread(image_path, pilmode="RGB")
     try:
         # Using KAZE, cause SIFT, ORB and other was moved to additional module
         # which is adding addtional pain during install
@@ -52,34 +46,30 @@ def extract_features(image_path, vector_size=32):
     return dsc
 
 
-def batch_extractor(images_path, dump_path="features.pck"):
+def batch_extractor(images_path, dump_features="features.dmp", dump_names="names.dmp"):
     folders = [os.path.join(images_path, p) for p in sorted(os.listdir(images_path))]
-    f = open("features.pck", "w")
-    num = []
-    for i in range(5): # number of people
-        files = [os.path.join(folders[i], p) for p in sorted(os.listdir(folders[i]))]
-        result = []
-        avgresult = []
-        print (i)
-        num.append(len(files))
+    f = open(dump_features, "w").close()
+    f = open(dump_features, "w")
+    g = open(dump_names, "w").close()
+    g = open(dump_names, "w")
+    result = []
+    names = []
+    for i in range(2): # number of people		
+		files = [os.path.join(folders[i], p) for p in sorted(os.listdir(folders[i]))]
+		print (i)
         for j in range(len(files)):
             name = files[j].split('/')[-1].lower()
             result.append(extract_features(files[j]))
-        
-        p = [0 for k in range(2048)]
-        assert(len(result) == num[i])
-        for j in range(len(result)):
-            for k in range(2048):
-                p[k] = p[k] + result[j][k]*result[j][k]
-        for k in range(2048):
-            p[k] = p[k] / num[i]
-            p[k] = math.sqrt(p[k])
-        for elmt in p:
-            f.write(str(elmt))
-            f.write(" ")
-        f.write("\n")
+			g.write(str(name))
+			g.write(";")
+    	g.write("\n")
+   
+    for i in result:
+    	for j in i:
+	        f.write(str(j))
+	        f.write(" ")
+	f.write("\n")
 
     f.close()
-        
-
+    g.close()
     
