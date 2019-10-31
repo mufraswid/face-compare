@@ -2,21 +2,44 @@ import os
 from extract import *
 from compare import *
 
-model_file = 'features.pck'
+feature_file = 'features.dmp'
+name_file = 'names.dmp'
 
-model = []
-
-f = open(model_file, 'r')
+features = []
+f = open(feature_file, 'r')
 for line in f.readlines():
     if (line[-1:] == '\n'):
         line = line[:-1]
-    model.append(line.split(' '))
+    features.append(line.split(' '))
 
-img_file = '5.jpg'
+names = []
+g = open(name_file, 'r')
+for name in g.readlines():
+    name = name[:-1]
+    names.append(name)
+
+img_file = '2.jpg'
 img = extract_features(img_file)
 
-res = []
-for i in range(len(model)):
-    res.append((dist(img, model[i]), i + 1))
+p = int(input())
 
-print(res)
+if (p == 0):
+    result = []
+    for i in range(len(features)):
+        x = dist(img, features[i])
+        result.append((x, i))
+    result.sort()
+
+    for i in range(5):
+        print(result[i][1])
+        print(names[result[i][1]])
+elif (p == 1):
+    result = []
+    for i in range(len(features)):
+        x = cosine(img, features[i])
+        result.append((x, i))
+    result.sort()
+
+    for i in range(5):
+        print(result[i][1])
+        print(names[result[i][1]])
