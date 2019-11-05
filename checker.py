@@ -3,7 +3,7 @@ from extract import *
 from compare import *
 
 def load():
-    # Hanya dijalankan sekali, saat membuka app
+    # Only ran once, when opening the app
     global features
     features = []
     global names
@@ -23,10 +23,10 @@ def load():
         names.append(name)
 
 def compareImage(img_path, mode, n):
-    # dijalankan setiap kali ingin mencari hasil
-    # img_path: path ke image yang ingin dicompare
+    # called every time we want to find similar images
+    # img_path: path to the image that we want to compare
     # mode: 0 - euclidean, 1 - cosine
-    # n: berapa n termirip yang ingin ditampilkan
+    # n: how many similar images we want to display
     
     img = extract_features(img_path)
 
@@ -39,6 +39,8 @@ def compareImage(img_path, mode, n):
         
         result = result[:n]
         for i in range(len(result)):
+            # uncomment the line below to debug the function
+            # print(result[i][0])
             result[i] = names[result[i][1]]
         return result
 
@@ -52,11 +54,7 @@ def compareImage(img_path, mode, n):
 
         result = result[:n]
         for i in range(len(result)):
+            # uncomment the line below to debug the function
+            # print(result[i][0])
             result[i] = names[result[i][1]]
         return result
-
-# load()
-# ans = compareImage(1, 4)
-# print(ans)
-# ans = compareImage(0, 4)
-# print(ans)

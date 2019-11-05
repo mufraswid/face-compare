@@ -9,14 +9,14 @@ import cPickle as pickle
 from scipy import *
 import imageio
 
-# Show image
 def show_img(path):
+    # Show image
     img = imageio.imread(path, pilmode="RGB")
     plt.imshow(img)
     plt.show()
 
-# Feature extractor
 def extract_features(image_path, vector_size=32):
+    # Feature extractor
     image = imageio.imread(image_path, pilmode="RGB")
     try:
         # Using KAZE, cause SIFT, ORB and other was moved to additional module
@@ -47,6 +47,7 @@ def extract_features(image_path, vector_size=32):
 
 
 def batch_extractor(images_path, dump_features="features.dmp", dump_names="names.dmp"):
+    # Extract the train folder into features.dmp (the feature vector) and names.dmp (the image paths)
     folders = [os.path.join(images_path, p) for p in sorted(os.listdir(images_path))]
     f = open(dump_features, "w").close()
     f = open(dump_features, "w")

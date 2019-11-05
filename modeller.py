@@ -1,4 +1,5 @@
-# Program ini hanya dijalankan sekali, untuk membuat features.dmp dan names.dmp
+# WARNING DO NOT RUN
+# This program will only be ran once, to create the features.dmp and names.dmp
 
 from extract import *
     
