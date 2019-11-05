@@ -52,4 +52,8 @@ def compareImage(img_path, mode, n):
 # ans = compareImage(1, 4)
 # print(ans)
 # ans = compareImage(0, 4)
+<<<<<<< HEAD
 # print(ans)
+=======
+# print(ans)
+>>>>>>> 5668df25fb12989640e091a529b78280be1839d8
