@@ -29,9 +29,9 @@ class ViewerPanel(wx.Panel):
         self.text = wx.TextCtrl(self, value="1")
         self.spin = wx.SpinButton(self, style=wx.SP_VERTICAL)
         self.Bind(wx.EVT_SPIN, self.OnSpin, self.spin)
-        self.spin.Disable()
         self.spin.SetRange(1, 100)
-        self.spin.SetValue(1)
+        self.spin.SetValue(1)        
+        self.spin.Disable()
         self.inputdis = wx.RadioButton(self, -1, " Distance", style = wx.RB_GROUP)        
         self.inputcos = wx.RadioButton(self, -1, " Cosine")
         self.inputdis.Bind(wx.EVT_RADIOBUTTON, self.mode)
@@ -80,11 +80,8 @@ class ViewerPanel(wx.Panel):
         return arr
     #----------------------------------------------------------------------
     def OnSpin(self, event):
-        self.text.SetValue(str(event.GetPosition()))
-    #----------------------------------------------------------------------
-    def display(self,event):
-    #menampilkan gambar yang paling mirip berdasarkan rank
-        i = self.inputRank.GetValue()
+        i = event.GetPosition()
+        self.text.SetValue(str(i))
         img = self.RunProgram()
         self.imageCtrl2.SetBitmap(wx.Bitmap(img[i]))
         self.Refresh()
