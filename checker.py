@@ -20,9 +20,8 @@ def load():
         name = name[:-1]
         names.append(name)
 
-def compareImage(mode, n):
-    img_file = 'cmp.jpg'
-    img = extract_features(img_file)
+def compareImage(img_path, mode, n):
+    img = extract_features(img_path)
 
     if (mode == 0):
         result = []
@@ -49,8 +48,8 @@ def compareImage(mode, n):
             result[i] = names[result[i][1]]
         return result
 
-load()
-ans = compareImage(1, 4)
-print(ans)
-ans = compareImage(0, 4)
-print(ans)
+# load()
+# ans = compareImage(1, 4)
+# print(ans)
+# ans = compareImage(0, 4)
+# print(ans)
