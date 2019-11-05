@@ -48,8 +48,8 @@ def compareImage(img_path, mode, n):
             result[i] = names[result[i][1]]
         return result
 
-load()
-ans = compareImage(1, 4)
-print(ans)
-ans = compareImage(0, 4)
-print(ans)
+# load()
+# ans = compareImage(1, 4)
+# print(ans)
+# ans = compareImage(0, 4)
+# print(ans)
