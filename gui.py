@@ -26,7 +26,7 @@ class ViewerPanel(wx.Panel):
         uplBtn.Bind(wx.EVT_BUTTON,self.upload)
         runBtn = wx.Button(self, label='Run the Program')
         runBtn.Bind(wx.EVT_BUTTON,self.runProgram)
-        self.inputdis = wx.RadioButton(self, -1, " Distribution ", style = wx.RB_GROUP)        
+        self.inputdis = wx.RadioButton(self, -1, " Distance", style = wx.RB_GROUP)        
         self.inputcos = wx.RadioButton(self, -1, " Cosine")
         self.inputdis.Bind(wx.EVT_RADIOBUTTON, self.mode)
         self.inputcos.Bind(wx.EVT_RADIOBUTTON, self.mode)
@@ -64,7 +64,7 @@ class ViewerPanel(wx.Panel):
     #menentukan mode yang akan dipilih
         btn = event.GetEventObject()
         label = btn.GetLabel()
-        if (label == 'Distribution'):
+        if (label == 'Distance'):
             return 0;
         if (label == 'Cosine'):
             return 1;
