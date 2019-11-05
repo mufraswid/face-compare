@@ -2,10 +2,12 @@ import os
 from extract import *
 from compare import *
 
-features = []
-names = []
-
 def load():
+    # Hanya dijalankan sekali, saat membuka app
+    global features
+    features = []
+    global names
+    names = []
     feature_file = 'features.dmp'
     name_file = 'names.dmp'
 
@@ -21,6 +23,11 @@ def load():
         names.append(name)
 
 def compareImage(img_path, mode, n):
+    # dijalankan setiap kali ingin mencari hasil
+    # img_path: path ke image yang ingin dicompare
+    # mode: 0 - euclidean, 1 - cosine
+    # n: berapa n termirip yang ingin ditampilkan
+    
     img = extract_features(img_path)
 
     if (mode == 0):
@@ -52,8 +59,4 @@ def compareImage(img_path, mode, n):
 # ans = compareImage(1, 4)
 # print(ans)
 # ans = compareImage(0, 4)
-<<<<<<< HEAD
 # print(ans)
-=======
-# print(ans)
->>>>>>> 5668df25fb12989640e091a529b78280be1839d8

@@ -2,10 +2,16 @@ import glob
 import os
 import wx
 from wx.lib.pubsub import pub as Publisher
-from modeller import *
+from checker import *
 
 class ViewerPanel(wx.Panel):
     """"""
+    def OnRadiogroup(self, e): 
+        rb = e.GetEventObject() 
+        print rb.GetLabel(),' is clicked from Radio Group' 
+            
+    def onRadioBox(self,e): 
+        print self.rbox.GetStringSelection(),' is clicked from Radio Box'
     #----------------------------------------------------------------------
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
@@ -14,17 +20,23 @@ class ViewerPanel(wx.Panel):
         self.layout()
     #----------------------------------------------------------------------
     def layout(self):
+        pnl = wx.Panel(self)
         self.mainSizer = wx.BoxSizer(wx.VERTICAL)
         btnSizer = wx.BoxSizer(wx.HORIZONTAL)        
         img = wx.EmptyImage(self.photoMaxSize,self.photoMaxSize)
+        load()
+
         self.imageCtrl = wx.StaticBitmap(self, wx.ID_ANY, 
                                          wx.BitmapFromImage(img))
         uplBtn = wx.Button(self, label='Upload a Picture')
         uplBtn.Bind(wx.EVT_BUTTON,self.upload)
-        runBtn = wx.Button(self, label='Run the Program')
-        runBtn.Bind(wx.EVT_BUTTON, run)        
+        
+        labelList = ['Euclidean Distance', 'Cosine Similarity']
+        self.rbox = wx.RadioBox(pnl, label = 'Mode', pos = (80, 10), choices = labelList, majorDimension = 1, style = wx.RA_SPECIFY_ROWS)
+        self.rbox.Bind(wx.EVT_RADIOBOX,self.onRadioBox)
+        
         btnSizer.Add(uplBtn, 0, wx.ALL|wx.CENTER, 5)
-        btnSizer.Add(runBtn, 0, wx.ALL|wx.CENTER, 5)
+
         self.mainSizer.Add(btnSizer, 0, wx.CENTER)           
         self.SetSizer(self.mainSizer)
     #----------------------------------------------------------------------

@@ -1,3 +1,5 @@
+# Program ini hanya dijalankan sekali, untuk membuat features.dmp dan names.dmp
+
 from extract import *
     
 def run():
