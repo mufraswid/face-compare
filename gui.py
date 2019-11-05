@@ -2,13 +2,14 @@ import glob
 import os
 import wx
 from wx.lib.pubsub import pub as Publisher
-from modeller import *
+from checker import *
 
 class ViewerPanel(wx.Panel):
     """"""
     #----------------------------------------------------------------------
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
+        load()
         width, height = wx.DisplaySize()        
         self.photoMaxSize = height - 200
         self.layout()
@@ -21,8 +22,9 @@ class ViewerPanel(wx.Panel):
                                          wx.BitmapFromImage(img))
         uplBtn = wx.Button(self, label='Upload a Picture')
         uplBtn.Bind(wx.EVT_BUTTON,self.upload)
+        address = self.upload
         runBtn = wx.Button(self, label='Run the Program')
-        runBtn.Bind(wx.EVT_BUTTON, run)        
+        runBtn.Bind(wx.EVT_BUTTON,self.programRun)
         btnSizer.Add(uplBtn, 0, wx.ALL|wx.CENTER, 5)
         btnSizer.Add(runBtn, 0, wx.ALL|wx.CENTER, 5)
         self.mainSizer.Add(btnSizer, 0, wx.CENTER)           
@@ -38,6 +40,7 @@ class ViewerPanel(wx.Panel):
         return address
         dialog.Destroy()
         self.OnView()
+
     #----------------------------------------------------------------------
     def onView(self):
         filepath = self.photoTxt.GetValue()
@@ -45,12 +48,21 @@ class ViewerPanel(wx.Panel):
         W = img.GetWidth()
         H = img.GetHeight()
         img = img.Scale(W,H)
-        self.SetBitmap(wx.BitmapFromImage(img))
-        self.panel.Refresh()
-        self.mainSizer.Fit(self.frame)
-
-
-
+        self.imageCtrl.SetBitmap(wx.BitmapFromImage(img))
+        self.Refresh()
+        self.mainSizer.Fit(self)
+    #----------------------------------------------------------------------
+    def programRun(self):
+        dlgone = wx.TextEntryDialog(self, 'Insert number here', 'Images Amount',
+                                style=wx.OK)
+        dlgone.ShowModal()
+        n = dlgone.GetValue()
+        dlgone.Destroy()
+        dlgtwo = wx.Choice(self, choices = ['dist', 'cosine'])
+        mode = dlgtwo.GetString()
+        dlgtwo.Destroy()
+        compareImage(address, mode, n)
+        
 #----------------------------------------------------------------------
 class ViewerFrame(wx.Frame):
     #----------------------------------------------------------------------
@@ -65,8 +77,6 @@ class ViewerFrame(wx.Frame):
         self.Show()
         self.sizer.Fit(self)
         self.Center()
-        
-        
     #----------------------------------------------------------------------
     def initToolbar(self):
         self.toolbar = self.CreateToolBar()
@@ -78,9 +88,6 @@ class ViewerFrame(wx.Frame):
         
     #----------------------------------------------------------------------
     def onOpenDirectory(self, event):
-        """
-        Opens a DirDialog to allow the user to open a folder with pictures
-        """
         dlg = wx.FileDialog(frame, "Open", "", "", 
       "JPEG files (*.jpg)|*.jpg", 
        wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
