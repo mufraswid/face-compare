@@ -15,9 +15,9 @@ class ViewerPanel(wx.Panel):
         self.layout()
     #----------------------------------------------------------------------
     def layout(self):
-        self.mainSizer = wx.BoxSizer(wx.VERTICAL)
-        sizer = wx.BoxSizer(wx.HORIZONTAL)        
-        img = wx.EmptyImage(self.photoMaxSize,self.photoMaxSize)
+        self.mainSizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer = wx.BoxSizer(wx.VERTICAL)        
+        img = wx.Image(self.photoMaxSize,self.photoMaxSize)
         self.imageCtrl = wx.StaticBitmap(self, wx.ID_ANY, 
                                          wx.Bitmap(img))
         self.imageCtrl2 = wx.StaticBitmap(self, wx.ID_ANY, 
@@ -25,25 +25,29 @@ class ViewerPanel(wx.Panel):
         uplBtn = wx.Button(self, label='Upload a Picture')
         uplBtn.Bind(wx.EVT_BUTTON,self.upload)
         runBtn = wx.Button(self, label='Run the Program')
-        runBtn.Bind(wx.EVT_BUTTON,self.runProgram)        
-        sizer.Add(self.imageCtrl, 0, wx.ALL, 5)
-        sizer.Add(self.imageCtrl2, 0, wx.ALL, 5)      
-        self.mainSizer.Add(sizer, 0, wx.CENTER)
-        self.mainSizer.Add(uplBtn, 0, wx.ALL|wx.CENTER, 5)
-        self.mainSizer.Add(runBtn, 0, wx.ALL|wx.CENTER, 5)
-        self.inputMode = wx.Choice(self, choices = ['Distribution', 'Cosine'])
+        runBtn.Bind(wx.EVT_BUTTON,self.runProgram)
+        self.inputdis = wx.RadioButton(self, -1, " Distribution ", style = wx.RB_GROUP)        
+        self.inputcos = wx.RadioButton(self, -1, " Cosine")
+        self.inputdis.Bind(wx.EVT_RADIOBUTTON, self.mode)
+        self.inputcos.Bind(wx.EVT_RADIOBUTTON, self.mode)
         self.inputInt = wx.Slider(self, 10, 1, 1, 10, style=wx.SL_HORIZONTAL|wx.SL_AUTOTICKS|wx.SL_LABELS)
         self.n = self.inputInt.GetValue()        
         self.inputRank = wx.SpinButton(self, style=wx.SP_VERTICAL)        
         self.inputRank.SetRange(1, self.n)
         self.inputRank.SetValue(1)
-        self.inputRank.Bind(wx.EVT_BUTTON,self.display)
-        self.mainSizer.Add(self.inputMode, 0, wx.ALL, 5)        
-        self.mainSizer.Add(self.inputRank, 0, wx.ALL, 5)
-        self.mainSizer.Add(self.inputInt, 0, wx.ALL, 5)
+        self.inputRank.Bind(wx.EVT_BUTTON,self.display)        
+        self.mainSizer.Add(self.imageCtrl, 0, wx.ALL, 5)
+        self.mainSizer.Add(self.imageCtrl2, 0, wx.ALL, 5)      
+        self.mainSizer.Add(sizer, 0, wx.ALL, 5)
+        sizer.Add(uplBtn, 0, wx.ALL|wx.CENTER, 5)
+        sizer.Add(runBtn, 0, wx.ALL|wx.CENTER, 5)
+        sizer.Add(self.inputdis, 0, wx.ALL, 5)        
+        sizer.Add(self.inputcos, 0, wx.ALL, 5)
+        sizer.Add(self.inputInt, 0, wx.ALL, 5)
         self.SetSizer(self.mainSizer)
     #----------------------------------------------------------------------
     def upload(self,event):
+    #upload foto yang akan dicompare
         wildcard = "JPEG files (*.jpg)|*.jpg"
         dialog = wx.FileDialog(None, "Choose a file",
                                wildcard=wildcard,
@@ -56,19 +60,23 @@ class ViewerPanel(wx.Panel):
         self.Refresh()
         self.mainSizer.Fit(self)
     #----------------------------------------------------------------------
-    def mode(self):
-        tipe = self.inputMode.GetSelection()
-        if (tipe == 'Distribution'):
+    def mode(self,event):
+    #menentukan mode yang akan dipilih
+        btn = event.GetEventObject()
+        label = btn.GetLabel()
+        if (label == 'Distribution'):
             return 0;
-        if (tipe == 'Cosine'):
+        if (label == 'Cosine'):
             return 1;
     #----------------------------------------------------------------------
     def runProgram(self,event):
+    #run program lengkap
         arr = compareImage(self.address, self.mode, self.n)
         self.inputRank.Enable()
         return arr
     #----------------------------------------------------------------------
     def display(self,event):
+    #menampilkan gambar yang paling mirip berdasarkan rank
         i = self.inputRank.GetValue()
         img = self.RunProgram()
         self.imageCtrl2.SetBitmap(wx.Bitmap(img[i]))
