@@ -9,7 +9,7 @@ class ViewerPanel(wx.Panel):
         wx.Panel.__init__(self, parent)
         load()
         width, height = wx.DisplaySize()        
-        self.photoMaxSize = 290
+        self.photoMaxSize = 300
         self.layout()
 
     def layout(self):
@@ -25,7 +25,7 @@ class ViewerPanel(wx.Panel):
         runBtn = wx.Button(self, label='Run the Program')
         runBtn.Bind(wx.EVT_BUTTON,self.runProgram)
         self.rankBtn = wx.SpinCtrl(self, value="", min=1, initial=1, name="Rank")        
-        self.Bind(wx.EVT_SPIN, self.OnSpin, self.rankBtn)
+        self.Bind(wx.EVT_SPINCTRL, self.OnSpin, self.rankBtn)
         self.rankBtn.Disable()
         self.inputdis = wx.RadioButton(self, -1, "Distance", style = wx.RB_GROUP)        
         self.inputcos = wx.RadioButton(self, -1, "Cosine")
@@ -69,6 +69,7 @@ class ViewerPanel(wx.Panel):
         i = (self.rankBtn.GetValue() - 1)
         img = wx.Image(self.arr[i], wx.BITMAP_TYPE_ANY)
         self.imageCtrl2.SetBitmap(wx.Bitmap(img))
+        self.rankBtn.SetMax(self.n)
         self.Refresh()
         self.mainSizer.Fit(self)
 
