@@ -7,9 +7,11 @@ import tkFileDialog
 # Initialization
 pointer = 0
 root = Tk()
+
 n = Scale(root, from_ = 1, to = 10, orient = HORIZONTAL)
 n.set(3)
 mode = IntVar(root)
+
 load()
 
 def select_image():
@@ -113,4 +115,9 @@ btn.pack(side = "top", fill = "both", expand = "yes", padx = "10", pady = "10")
 btn = Button(root, text = "Select an image", command = select_image)
 btn.pack(side = "bottom", fill = "both", expand = "yes", padx = "10", pady = "10")
 
+positionRight = int(root.winfo_screenwidth()/2 - 400)
+positionDown = int(root.winfo_screenheight()/2 - 179)
+root.geometry("+{}+{}".format(positionRight, positionDown))
+
+root.title('Gesichtserkennungssystem')
 root.mainloop()
