@@ -1,4 +1,4 @@
 import os
 
-os.system('python title.py')
-os.system('python gui.py')
+os.system('py -2 title.py')
+os.system('py -2 gui.py')

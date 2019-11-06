@@ -2,10 +2,11 @@ from Tkinter import *
 from PIL import Image
 from PIL import ImageTk
 from checker import *
-import tkFileDialog
+import tkFileDialog, tkMessageBox
 
 # Initialization
 pointer = 0
+path = ''
 root = Tk()
 
 n = Scale(root, from_ = 1, to = 10, orient = HORIZONTAL)
@@ -31,12 +32,16 @@ def select_image():
 def find_similar():
     # Finding images that are similar, using the compare function (euclidean distance or cosine similarity)
     global path, res, pointer
-    print('Finding ' + str(n.get()) + ' most similar images to ' + path + '.')
-    res = compareImage(path, mode.get(), n.get())
-    pointer = 0
-    logResult(res)
-    display_result()
-    return pointer
+    print(path)
+    if (len(path) > 0):
+        print('Finding ' + str(n.get()) + ' most similar images to ' + path + '.')
+        res = compareImage(path, mode.get(), n.get())
+        pointer = 0
+        logResult(res)
+        display_result()
+        return pointer
+    else:
+        tkMessageBox.showerror("Error", "Select a picture first!")
 
 def display_result():
     # Displaying results
