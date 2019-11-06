@@ -1,91 +1,123 @@
-import glob
-import os
-import wx
-from wx.lib.pubsub import pub as Publisher
+from Tkinter import *
+from PIL import Image
+from PIL import ImageTk
 from checker import *
-class ViewerPanel(wx.Panel):
+import tkFileDialog
 
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
-        load()
-        width, height = wx.DisplaySize()        
-        self.photoMaxSize = 300
-        self.layout()
+# Initialization
+pointer = 0
+root = Tk()
 
-    def layout(self):
-        self.mainSizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer = wx.BoxSizer(wx.VERTICAL)        
-        img = wx.Image(self.photoMaxSize,self.photoMaxSize)
-        self.imageCtrl = wx.StaticBitmap(self, wx.ID_ANY, 
-                                         wx.Bitmap(img))
-        self.imageCtrl2 = wx.StaticBitmap(self, wx.ID_ANY, 
-                                         wx.Bitmap(img))
-        uplBtn = wx.Button(self, label='Upload a Picture')
-        uplBtn.Bind(wx.EVT_BUTTON,self.upload)
-        runBtn = wx.Button(self, label='Run the Program')
-        runBtn.Bind(wx.EVT_BUTTON,self.runProgram)
-        self.rankBtn = wx.SpinCtrl(self, value="", min=1, initial=1, name="Rank")        
-        self.Bind(wx.EVT_SPINCTRL, self.OnSpin, self.rankBtn)
-        self.rankBtn.Disable()
-        self.inputdis = wx.RadioButton(self, -1, "Distance", style = wx.RB_GROUP)        
-        self.inputcos = wx.RadioButton(self, -1, "Cosine")
-        self.inputdis.Bind(wx.EVT_RADIOBUTTON, self.runProgram)
-        self.inputcos.Bind(wx.EVT_RADIOBUTTON, self.runProgram)
-        self.inputInt = wx.Slider(self, 10, 1, 1, 10, style=wx.SL_HORIZONTAL|wx.SL_AUTOTICKS|wx.SL_LABELS)
-        self.n = self.inputInt.GetValue()
-        self.mainSizer.Add(self.imageCtrl, 0, wx.ALL, 5)
-        self.mainSizer.Add(self.imageCtrl2, 0, wx.ALL, 5)
-        self.mainSizer.Add(sizer, 0, wx.ALL, 5)
-        sizer.Add(uplBtn, 0, wx.ALL|wx.CENTER, 5)
-        sizer.Add(runBtn, 0, wx.ALL|wx.CENTER, 5)
-        sizer.Add(self.rankBtn, 0, wx.CENTER)
-        sizer.Add(self.inputdis, 0, wx.ALL, 5)
-        sizer.Add(self.inputcos, 0, wx.ALL, 5)
-        sizer.Add(self.inputInt, 0, wx.ALL, 5)
-        self.SetSizer(self.mainSizer)
+n = Scale(root, from_ = 1, to = 10, orient = HORIZONTAL)
+n.set(3)
+mode = IntVar(root)
 
-    def upload(self,event):
-        wildcard = "JPEG files (*.jpg)|*.jpg"
-        dialog = wx.FileDialog(None, "Choose a file",
-                               wildcard=wildcard,
-                               style=wx.FD_OPEN)
-        if dialog.ShowModal() == wx.ID_OK:
-            self.address = dialog.GetPath()
-        dialog.Destroy()
-        img = wx.Image(self.address, wx.BITMAP_TYPE_ANY)
-        self.imageCtrl.SetBitmap(wx.Bitmap(img))
-        self.Refresh()
-        self.mainSizer.Fit(self)
+load()
 
-    def runProgram(self,event):
-        x = 0
-        print(self.inputcos.GetValue())
-        if (self.inputcos.GetValue() == True):
-            x = 1
-        arr = compareImage(self.address, x, self.n)
-        self.rankBtn.Enable()
+def select_image():
+    # Select image to be compared
+    global panelA, panelB, path
+
+    path = tkFileDialog.askopenfilename()
+    if (len(path) > 0):
+        image = cv2.imread(path)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = Image.fromarray(image)
+        image = ImageTk.PhotoImage(image)
+
+        panelA.configure(image = image)
+        panelA.image = image
+
+def find_similar():
+    # Finding images that are similar, using the compare function (euclidean distance or cosine similarity)
+    global path, res, pointer
+    print('Finding ' + str(n.get()) + ' most similar images to ' + path + '.')
+    res = compareImage(path, mode.get(), n.get())
+    pointer = 0
+    logResult(res)
+    display_result()
+    return pointer
+
+def display_result():
+    # Displaying results
+    global res, pointer, panelB
+    image = cv2.imread(res[pointer])
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image = Image.fromarray(image)
+    image = ImageTk.PhotoImage(image)
     
-    def OnSpin(self,event):        
-        i = (self.rankBtn.GetValue() - 1)
-        img = wx.Image(self.arr[i], wx.BITMAP_TYPE_ANY)
-        self.imageCtrl2.SetBitmap(wx.Bitmap(img))
-        self.rankBtn.SetMax(self.n)
-        self.Refresh()
-        self.mainSizer.Fit(self)
+    panelB.configure(image = image)
+    panelB.image = image
+    counter.config(text = str(pointer + 1))
+    return pointer
 
-class ViewerFrame(wx.Frame):
+def decrease_pointer():
+    # Decrease pointer, will normalize if out of bounds
+    global pointer
+    pointer -= 1
+    if (pointer < 0):
+        pointer += n.get()
+    if (pointer >= n.get()):
+        pointer -= n.get()
+    display_result()
+    counter.config(text = str(pointer + 1))
+    return pointer
 
-    def __init__(self):
-        wx.Frame.__init__(self, None, title="FaceRecog")
-        panel = ViewerPanel(self)
-        self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.sizer.Add(panel, 1, wx.EXPAND)
-        self.SetSizer(self.sizer)
-        self.Show()
-        self.sizer.Fit(self)
-        self.Center()
+def increase_pointer():
+    # Increase pointer, will normalize if out of bounds
+    global pointer
+    pointer += 1
+    if (pointer < 0):
+        pointer += n.get()
+    if (pointer >= n.get()):
+        pointer -= n.get()
+    display_result()
+    counter.config(text = str(pointer + 1))
+    return pointer
 
-if __name__ == "__main__":
-    app = wx.App()
-    frame = ViewerFrame()
-    app.MainLoop()
+# Set default black colour to both panels
+black = cv2.imread('black.jpg')
+black = Image.fromarray(black)
+black = ImageTk.PhotoImage(black)
+panelA = Label(image = black)
+panelA.image = black
+panelA.pack(side = "left", padx = 10, pady = 10)
+panelB = Label(image = black)
+panelB.image = black
+panelB.pack(side = "left", padx = 10, pady = 10)
+
+# Navigation buttons
+navFrame = Frame(root)
+navFrame.pack(side = "bottom", pady = 10)
+leftButton = Button(navFrame, text = "<", command = decrease_pointer)
+leftButton.pack(side = "left")
+counter = Label(navFrame)
+counter.config(text = str(pointer + 1))
+counter.pack(side = "left")
+rightButton = Button(navFrame, text = ">", command = increase_pointer)
+rightButton.pack(side = "left")
+
+# Mode selection
+radioGroup = LabelFrame(root, text = "Choose mode")
+radioGroup.pack()
+mode0 = Radiobutton(radioGroup, text = "Euclidean Distance", variable = mode, value = 0)
+mode0.pack(anchor = W)
+mode1 = Radiobutton(radioGroup, text = "Cosine Similarity", variable = mode, value = 1)
+mode1.pack(anchor = W)
+
+# Slider for n (number of similar images to display)
+n.pack()
+
+# Calculate and image select button
+btn = Button(root, text = "Calculate!", command = find_similar)
+btn.pack(side = "top", fill = "both", expand = "yes", padx = "10", pady = "10")
+
+btn = Button(root, text = "Select an image", command = select_image)
+btn.pack(side = "bottom", fill = "both", expand = "yes", padx = "10", pady = "10")
+
+positionRight = int(root.winfo_screenwidth()/2 - 400)
+positionDown = int(root.winfo_screenheight()/2 - 179)
+root.geometry("+{}+{}".format(positionRight, positionDown))
+
+root.title('Gesichtserkennungssystem')
+root.mainloop()
