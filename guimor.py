@@ -29,10 +29,10 @@ def select_image():
 def find_similar():
     # Finding images that are similar, using the compare function (euclidean distance or cosine similarity)
     global path, res, pointer
-    print(path, mode.get(), n.get())
+    print('Finding ' + str(n.get()) + ' most similar images to ' + path + '.')
     res = compareImage(path, mode.get(), n.get())
     pointer = 0
-    print(res)
+    logResult(res)
     display_result()
     return pointer
 
@@ -86,7 +86,7 @@ panelB.pack(side = "left", padx = 10, pady = 10)
 
 # Navigation buttons
 navFrame = Frame(root)
-navFrame.pack(side = "bottom")
+navFrame.pack(side = "bottom", pady = 10)
 leftButton = Button(navFrame, text = "<", command = decrease_pointer)
 leftButton.pack(side = "left")
 counter = Label(navFrame)
