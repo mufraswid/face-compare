@@ -27,8 +27,8 @@ class ViewerPanel(wx.Panel):
         self.rankBtn = wx.SpinCtrl(self, value="", min=1, max=10, initial=1, name="Rank")        
         self.Bind(wx.EVT_SPIN, self.OnSpin, self.rankBtn)
         self.rankBtn.Disable()
-        self.inputdis = wx.RadioButton(self, -1, " Distance", style = wx.RB_GROUP)        
-        self.inputcos = wx.RadioButton(self, -1, " Cosine")
+        self.inputdis = wx.RadioButton(self, -1, "Distance", style = wx.RB_GROUP)        
+        self.inputcos = wx.RadioButton(self, -1, "Cosine")
         self.inputdis.Bind(wx.EVT_RADIOBUTTON, self.mode)
         self.inputcos.Bind(wx.EVT_RADIOBUTTON, self.mode)
         self.inputInt = wx.Slider(self, 10, 1, 1, 10, style=wx.SL_HORIZONTAL|wx.SL_AUTOTICKS|wx.SL_LABELS)
@@ -61,22 +61,28 @@ class ViewerPanel(wx.Panel):
         btn = event.GetEventObject()
         label = btn.GetLabel()
         if (label == 'Distance'):
-            return 0;
+            return 0
         if (label == 'Cosine'):
-            return 1;
+            return 1
 
     def runProgram(self,event):
-        arr = compareImage(self.address, self.mode, self.n)
+        x = 0
+        print(self.inputcos.GetValue())
+        if (self.inputcos.GetValue() == True):
+            x = 1
+        arr = compareImage(self.address, x, self.n)
         self.rankBtn.Enable()
-        img = wx.Image(arr[1], wx.BITMAP_TYPE_ANY)
-        self.imgaeCtrl2.SetBitmap(wx.Bitmap(img))
+        print(self.address, x, self.n)
+        print(arr)
+        img = wx.Image(arr[0], wx.BITMAP_TYPE_ANY)
+        self.imageCtrl2.SetBitmap(wx.Bitmap(img))
         self.Refresh()
         self.mainSizer.Fit(self)
     
     def OnSpin(self,event):        
         i = self.rankBtn.GetValue()
         img = wx.Image(self.arr[i], wx.BITMAP_TYPE_ANY)
-        self.imgaeCtrl2.SetBitmap(wx.Bitmap(img))
+        self.imageCtrl2.SetBitmap(wx.Bitmap(img))
         self.Refresh()
         self.mainSizer.Fit(self)
 
