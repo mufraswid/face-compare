@@ -9,7 +9,7 @@ root = Tkinter.Tk()
 
  
 
-f = 'title.png'
+f = 'title.jpg'
 image1 = Image.open(f)
 image1 = image1.resize((900, 750), Image.ANTIALIAS)
 root.geometry('%dx%d' % (image1.size[0],image1.size[1]))
