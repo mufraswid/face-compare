@@ -17,3 +17,7 @@ Sebuah face recognition software dengan akurasi 500%.
 ## How to Run
 + Run the "run.py" file
 + Enjoy Gesichtserkennungssystem
+
+## FAQ
+Q: valueError: could not convert string to float: version
+A: This is caused by the difference in UNIX line endings (this project is made using Windows 10). Solution: run the modeller.py. This will recreate the features.dmp and names.dmp file in your system.
