@@ -37,7 +37,6 @@ def find_similar():
         print('Finding ' + str(n.get()) + ' most similar images to ' + path + '.')
         res = compareImage(path, mode.get(), n.get())
         pointer = 0
-        logResult(res)
         display_result()
         return pointer
     else:
