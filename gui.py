@@ -24,6 +24,7 @@ def select_image():
         image = cv2.imread(path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = Image.fromarray(image)
+        image = image.resize((299, 299), Image.ANTIALIAS)
         image = ImageTk.PhotoImage(image)
 
         panelA.configure(image = image)
@@ -47,11 +48,12 @@ def display_result():
     image = cv2.imread(res[pointer])
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = Image.fromarray(image)
+    image = image.resize((299, 299), Image.ANTIALIAS)
     image = ImageTk.PhotoImage(image)
     
     panelB.configure(image = image)
     panelB.image = image
-    counter.config(text = str(pointer + 1))
+    counter.config(text = " Rank " + str(pointer + 1) + " ")
     return pointer
 
 def decrease_pointer():
@@ -63,7 +65,7 @@ def decrease_pointer():
     if (pointer >= n.get()):
         pointer -= n.get()
     display_result()
-    counter.config(text = str(pointer + 1))
+    counter.config(text = " Rank " + str(pointer + 1) + " ")
     return pointer
 
 def increase_pointer():
@@ -75,12 +77,13 @@ def increase_pointer():
     if (pointer >= n.get()):
         pointer -= n.get()
     display_result()
-    counter.config(text = str(pointer + 1))
+    counter.config(text = " Rank " + str(pointer + 1) + " ")
     return pointer
 
 # Set default black colour to both panels
 black = cv2.imread('black.jpg')
 black = Image.fromarray(black)
+black = black.resize((299, 299), Image.ANTIALIAS)
 black = ImageTk.PhotoImage(black)
 panelA = Label(image = black)
 panelA.image = black
