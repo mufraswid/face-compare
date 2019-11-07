@@ -1,4 +1,4 @@
 import os
 
-os.system('python title.py')
-os.system('python guimor.py')
+os.system('py -2 title.py')
+os.system('py -2 guimor.py')
