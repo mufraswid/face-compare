@@ -8,7 +8,7 @@ def button_click_exit_mainloop (event):
 
 root = Tk()
 
-f = 'foto.png'
+f = 'title.jpg'
 image1 = Image.open(f)
 image1 = image1.resize((600, 500), Image.ANTIALIAS)
 root.geometry('%dx%d' % (image1.size[0],image1.size[1]))
@@ -25,5 +25,5 @@ root.geometry("+{}+{}".format(positionRight, positionDown))
 
 
 root.overrideredirect(1)
-root.after(2000, lambda: root.destroy())
+root.after(2125, lambda: root.destroy())
 root.mainloop()
