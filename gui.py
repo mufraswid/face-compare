@@ -32,7 +32,6 @@ def select_image():
 def find_similar():
     # Finding images that are similar, using the compare function (euclidean distance or cosine similarity)
     global path, res, pointer
-    print(path)
     if (len(path) > 0):
         print('Finding ' + str(n.get()) + ' most similar images to ' + path + '.')
         res = compareImage(path, mode.get(), n.get())
