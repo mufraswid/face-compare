@@ -123,4 +123,5 @@ positionDown = int(root.winfo_screenheight()/2 - 179)
 root.geometry("+{}+{}".format(positionRight, positionDown))
 
 root.title('Gesichtserkennungssystem')
+root.resizable(width=False, height=False)
 root.mainloop()
